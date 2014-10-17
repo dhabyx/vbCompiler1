@@ -1,0 +1,35 @@
+package sumadoraarbol;
+
+import java_cup.runtime.Symbol;
+
+action code {:
+:}
+
+parser code {:
+
+    @Override
+    public void syntax_error(Symbol sy) {
+        token t=(token)sy.value;
+        done_parsing();
+        report_error("Error sintáctico cerca de \""+ t.getCadena()+"\" ["+t.getRow()+" : "+t.getCol()+"]",null);
+        
+    }
+:}
+
+terminal SUMA, RESTA, PCOMA;
+terminal token DECIMAL;
+
+non terminal expr_list, expr_part;
+non terminal Integer expr;
+
+precedence left SUMA, RESTA;
+
+start with expr_list;
+
+expr_list ::= expr_list expr_part | expr_part ;
+expr_part ::= expr:e {: System.out.println("="+e+";"); :} PCOMA;
+            
+expr ::=  DECIMAL:d {: RESULT=d.getEntero(); :}
+        |expr:l SUMA expr:r {: RESULT=l + r; :}
+        |expr:l RESTA expr:r {: RESULT=l - r; :}
+        ;

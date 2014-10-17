@@ -30,12 +30,12 @@ public class GenCup {
         opciones[0]="-destdir";
         opciones[1]="src"
                 +File.separator+
-                "sintactico"; //cambiar destino
+                "sumadoraarbol"; //cambiar destino
         opciones[2]="-parser";
-        opciones[3]="Analizador"; //cambiar el nombre de la clase
+        opciones[3]="AnalizadorSintactico"; //cambiar el nombre de la clase
         opciones[4]="src"
                 +File.separator+
-                "sintactico"
+                "base"
                 +File.separator+
                 "calculadora.cup"; //cambiar el nombre de la fuente
         try {     

@@ -15,8 +15,13 @@
 
 package sumadoraarbol;
 
+import java.io.FileReader;
+
 
 /**
+ * Ejemplo de creación de un compilador muy básico con JFlex y JCup.
+ * 
+ * 
  * Para su correcto funcionamiento se debe recordar enlazar las bibliotecas 
  * JCup y JFlex
  */
@@ -32,7 +37,17 @@ public class SumadoraArbol {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+       try {
+            AnalizadorLexico lex = new AnalizadorLexico(new FileReader("numeros.txt"));
+            AnalizadorSintactico parser = new AnalizadorSintactico(lex);
+            Object p;
+            p = parser.parse();
+            System.out.println(p.toString());
+        } 
+        catch (java.lang.Exception el)
+        {
+            System.out.println("error encontrado: "+el.getMessage()); 
+        }
     }
     
 }
