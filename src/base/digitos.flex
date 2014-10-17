@@ -13,6 +13,7 @@ import java_cup.runtime.Symbol;
   System.out.println("Fin de archivo encontrado");
   return new Symbol(sym.EOF);
 %eofval}
+%eofclose
 LineTerminator = \r|\n|\r\n
 WhiteSpace = {LineTerminator} | [ \t\f]
 Decimal = 0 | [1-9][0-9]*

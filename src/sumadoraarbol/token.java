@@ -27,9 +27,9 @@ package sumadoraarbol;
  * 
  */
 public class token {
-    private int col; // columnas y fila de cada token encontrado
-    private int row;
-    private String cadena; //cadenas de texto devuletas por el analizador léxico
+    private final int col; // columnas y fila de cada token encontrado
+    private final int row;
+    private final String cadena; //cadenas de texto devuletas por el analizador léxico
     private int entero; // el valor encontrado.
     
     public token(int col, int row, String cadena, boolean esDigito ) {

@@ -6,6 +6,9 @@ action code {:
 :}
 
 parser code {:
+    
+    public Arbol arbolSintactico;
+
 
     @Override
     public void syntax_error(Symbol sy) {
@@ -16,20 +19,43 @@ parser code {:
     }
 :}
 
+init with {: 
+    arbolSintactico = new Arbol();
+:};
+
 terminal SUMA, RESTA, PCOMA;
 terminal token DECIMAL;
 
-non terminal expr_list, expr_part;
-non terminal Integer expr;
+non terminal expr_list;
+non terminal Nodo expr, expr_part;
 
 precedence left SUMA, RESTA;
 
 start with expr_list;
 
-expr_list ::= expr_list expr_part | expr_part ;
-expr_part ::= expr:e {: System.out.println("="+e+";"); :} PCOMA;
+expr_list ::= expr_list expr_part:e {: 
+                parser.arbolSintactico.agregarHijo(e);
+            :}
+            | expr_part:e {:
+                parser.arbolSintactico.agregarHijo(e);
+            :};
+expr_part ::= expr:e {:
+                Nodo expresion = new Nodo(Nodo.TIPO_EXPRESION,0);
+                expresion.agregarHijo(e);
+                RESULT=expresion;
+            :} PCOMA;
             
-expr ::=  DECIMAL:d {: RESULT=d.getEntero(); :}
-        |expr:l SUMA expr:r {: RESULT=l + r; :}
-        |expr:l RESTA expr:r {: RESULT=l - r; :}
+expr ::=  DECIMAL:d {: RESULT=new Nodo(d.getEntero()); :}
+        |expr:l SUMA expr:r {: 
+            Nodo raiz = new Nodo(Nodo.TIPO_OPERADOR, Nodo.OP_SUMA);
+            raiz.agregarHijo(l);
+            raiz.agregarHijo(r);
+            RESULT=raiz; 
+        :}
+        |expr:l RESTA expr:r {: 
+            Nodo raiz = new Nodo(Nodo.TIPO_OPERADOR, Nodo.OP_RESTA);
+            raiz.agregarHijo(l);
+            raiz.agregarHijo(r);
+            RESULT=raiz;
+         :}
         ;

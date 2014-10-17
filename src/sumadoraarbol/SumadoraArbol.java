@@ -40,9 +40,8 @@ public class SumadoraArbol {
        try {
             AnalizadorLexico lex = new AnalizadorLexico(new FileReader("numeros.txt"));
             AnalizadorSintactico parser = new AnalizadorSintactico(lex);
-            Object p;
-            p = parser.parse();
-            System.out.println(p.toString());
+            parser.parse();
+            parser.arbolSintactico.recorrerArbol();
         } 
         catch (java.lang.Exception el)
         {
