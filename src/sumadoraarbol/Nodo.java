@@ -62,7 +62,7 @@ public class Nodo {
     
     public Nodo(int valor) {
         this.hijos = new ArrayList<>();
-        this.tipo=1;
+        this.tipo=TIPO_NUMERO;
         this.valor=valor;
         this.operador=0;
     }
@@ -93,6 +93,13 @@ public class Nodo {
         return operador;
     }
 
+    public String getOperadorString() {
+        if (operador == OP_SUMA)
+            return "+";
+        else
+            return "-";
+    }
+    
     /**
      * @param operador the operador to set
      */

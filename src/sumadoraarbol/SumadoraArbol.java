@@ -41,7 +41,9 @@ public class SumadoraArbol {
             AnalizadorLexico lex = new AnalizadorLexico(new FileReader("numeros.txt"));
             AnalizadorSintactico parser = new AnalizadorSintactico(lex);
             parser.parse();
+            parser.arbolSintactico.setGraphvizPath("dot");
             parser.arbolSintactico.recorrerArbol();
+            parser.arbolSintactico.recorrerArbol(Arbol.TIPO_RECORRIDO_GRAFO);
         } 
         catch (java.lang.Exception el)
         {
