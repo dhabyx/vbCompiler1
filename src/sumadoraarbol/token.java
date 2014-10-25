@@ -31,20 +31,24 @@ public class token {
     private final int row;
     private final String cadena; //cadenas de texto devuletas por el analizador léxico
     private int entero; // el valor encontrado.
+    private boolean tab;
     
-    public token(int col, int row, String cadena, boolean esDigito ) {
+    public token(int col, int row, String cadena, boolean esDigito, boolean esTab ) {
         this.col = col;
         this.row = row;
         this.cadena = cadena;
+        this.tab = esTab;
         if (esDigito){
         this.entero = Integer.parseInt(cadena);
         }
     }
     
-    public token(int col, int row, String cadena ) {
-        this.col = col;
-        this.row = row;
-        this.cadena = cadena;
+    public token(int col, int row, String cadena, boolean esDigito) {
+        this(col,row,cadena,esDigito,false);
+    }
+    
+    public token(int col, int row, String cadena) {
+        this(col,row,cadena,false,false);
     }
     
     public int getCol() {

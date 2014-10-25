@@ -1,14 +1,34 @@
+/*
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package sumadoraarbol;
 
 import java_cup.runtime.Symbol;
 
+/**
+ * 
+ * @author Dhaby Xiloj <dhabyx@gmail.com>
+ * 
+ */
+
 action code {:
+    private int tabs_counter=0;
 :}
 
 parser code {:
     
     public Arbol arbolSintactico;
-
 
     @Override
     public void syntax_error(Symbol sy) {
@@ -21,12 +41,12 @@ parser code {:
 
 init with {: 
     arbolSintactico = new Arbol();
-:};
+:}
 
 terminal SUMA, RESTA, PCOMA;
-terminal token DECIMAL;
+terminal token DECIMAL, TAB;
 
-non terminal expr_list;
+non terminal expr_list, tab_list;
 non terminal Nodo expr, expr_part;
 
 precedence left SUMA, RESTA;
@@ -39,11 +59,35 @@ expr_list ::= expr_list expr_part:e {:
             | expr_part:e {:
                 parser.arbolSintactico.agregarHijo(e);
             :};
-expr_part ::= expr:e {:
+
+/* Se ha agregado apariciones con indentación y sin indentación.
+ * Al final imprimirá la cantidad de tabuladores encontrados y 
+ * reiniciará el contador, ésto cada vez que encuentre un final 
+ * de expresión con PCOMA
+ */
+expr_part ::= tab_list expr:e {:
                 Nodo expresion = new Nodo(Nodo.TIPO_EXPRESION,0);
                 expresion.agregarHijo(e);
                 RESULT=expresion;
-            :} PCOMA;
+            :} PCOMA {: 
+                System.out.println("tabs :"+tabs_counter); 
+                tabs_counter=0; 
+            :}
+            | expr:e {:
+                Nodo expresion = new Nodo(Nodo.TIPO_EXPRESION,0);
+                expresion.agregarHijo(e);
+                RESULT=expresion;
+            :} PCOMA {: 
+                System.out.println("tabs :"+tabs_counter); 
+                tabs_counter=0; 
+            :};
+
+/* Regla para manejo de tabuladores.
+ * Se considera uno o varios tabs, aunque no se tratan en 
+ * para saber si la sintaxis es la correcta.
+ */
+tab_list ::= TAB {: tabs_counter++; :} tab_list 
+            | TAB {: tabs_counter++; :};
             
 expr ::=  DECIMAL:d {: RESULT=new Nodo(d.getEntero()); :}
         |expr:l SUMA expr:r {: 
