@@ -30,9 +30,9 @@ import java.util.logging.Logger;
  */
 public class Arbol {
     private Nodo raiz;
-    
+
     private String graphvizPath;
-    
+
     /**
      * Recorrdido simple, con despliegue a consola
      */
@@ -49,15 +49,15 @@ public class Arbol {
     public Arbol() {
         this.raiz = new Nodo();
     }
-    
+
     /**
-     * 
+     *
      * @param nodo nodo para inicializar el arbol
      */
     public Arbol(Nodo nodo) {
         this.raiz = nodo;
     }
-    
+
     /**
      *
      * @param nodo establece el nodo raiz, luego de ser instanciada la clase
@@ -65,7 +65,7 @@ public class Arbol {
     public void setRaiz(Nodo nodo) {
         this.raiz = nodo;
     }
-    
+
     /**
      *
      * @param nodo agrega un nodo hijo a la raiz
@@ -73,7 +73,7 @@ public class Arbol {
     public void agregarHijo(Nodo nodo) {
         this.raiz.agregarHijo(nodo);
     }
-    
+
     /**
      *
      * @return Nodo retorna el nodo raiz
@@ -81,16 +81,16 @@ public class Arbol {
     public Nodo getRaiz() {
         return raiz;
     }
-    
+
     /**
      *
-     * @param path dirección absoluta o de sistema hacia el comando dot de 
+     * @param path dirección absoluta o de sistema hacia el comando dot de
      *      graphviz.
      */
     public void setGraphvizPath(String path) {
         graphvizPath = path;
     }
-    
+
     /**
      * recorrido In-Orden
      */
@@ -99,10 +99,20 @@ public class Arbol {
             recorrido(raiz);
         }
     }
-    
+
     private void recorrido(Nodo nodo) {
         if (nodo.getHijos().isEmpty()) {
-            System.out.println("Valor :" + nodo.getValor());
+            switch (nodo.getTipo()) {
+                case Nodo.TIPO_NUMERO:
+                    System.out.println("Valor :" + nodo.getValor());
+                    break;
+                case Nodo.TIPO_IDENTIFICADOR:
+                    System.out.println("Id :" + nodo.getIdentificador());
+                    break;
+                case Nodo.TIPO_OPERADOR:
+                    imprimirOperador(nodo);
+            }
+
             return;
         }
         for (Nodo hijo : nodo.getHijos()) {
@@ -110,18 +120,29 @@ public class Arbol {
         }
         switch(nodo.getTipo()) {
             case Nodo.TIPO_OPERADOR:
-                System.out.print("Operador :");
-                if (nodo.getOperador() == Nodo.OP_SUMA)
-                    System.out.println("Suma");
-                else
-                    System.out.println("Resta");
+                imprimirOperador(nodo);
                 break;
             case Nodo.TIPO_EXPRESION:
                 System.out.println("Nodo expresión");
                 break;
         }
     }
-    
+
+    private void imprimirOperador(Nodo nodo) {
+        System.out.print("Operador :");
+        switch (nodo.getOperador()) {
+            case Nodo.OP_SUMA:
+                System.out.println("Suma");
+                break;
+            case Nodo.OP_RESTA:
+                System.out.println("Resta");
+                break;
+            case Nodo.OP_IGUAL:
+                System.out.println("Igual");
+                break;
+        }
+    }
+
     /**
      *
      * @param tipoRecorrido Elige el tipo de recorrido que se hará
@@ -135,7 +156,7 @@ public class Arbol {
             recorrerArbol();
         }
     }
-    
+
     /*
     * contador Utilzado para controlar el número de nodos que se van
     * utilizando en el arbol y crear un identificador único para cada uno.
@@ -150,7 +171,7 @@ public class Arbol {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            
+
             FileWriter fw = new FileWriter(file.getAbsoluteFile());
             try (BufferedWriter bw = new BufferedWriter(fw)) {
                 bw.write(encabezado);
@@ -163,21 +184,21 @@ public class Arbol {
                 bw.close();
                 crearGraficoPNG(file);
             }
-            
+
         } catch (IOException ex) {
             Logger.getLogger(Arbol.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
-    
-    private void recorridoGrafo(Nodo nodo, BufferedWriter bw, int idPadre, 
+
+    private void recorridoGrafo(Nodo nodo, BufferedWriter bw, int idPadre,
             String padreNombre) throws IOException {
-        
+
         if (nodo.getTipo()>0){
             contador++;
             //System.out.println("Hijo no.:"+contador+" Padre:"+idPadre);
 
-            switch(nodo.getTipo()) {                
+            switch(nodo.getTipo()) {
                 case Nodo.TIPO_EXPRESION:
                     bw.write(crearContenido(idPadre,padreNombre,contador,"expr"));
                     bw.newLine();
@@ -187,11 +208,15 @@ public class Arbol {
                             nodo.getOperadorString()));
                     bw.newLine();
                     break;
-                case Nodo.TIPO_NUMERO:                 
+                case Nodo.TIPO_NUMERO:
                     bw.write(crearContenido(idPadre,padreNombre,contador,
                             String.valueOf(nodo.getValor())));
                     //System.out.println("  valor:"+nodo.getValor());
                     bw.newLine();
+                    break;
+                case Nodo.TIPO_IDENTIFICADOR:
+                    bw.write(crearContenido(idPadre,padreNombre,contador,
+                            nodo.getIdentificador()));
                     break;
             }
             if (!nodo.getHijos().isEmpty()) {
@@ -201,11 +226,11 @@ public class Arbol {
                     //System.out.println("  Hijo no.:"+contador+" Padre:"+idPadre);
                 }
             }
-        }          
+        }
     }
 
     private void crearGraficoPNG(File file) throws IOException {
-        
+
         String name = file.getAbsolutePath();
         int pos = name.lastIndexOf(".");
         if (pos > 0) {
@@ -233,5 +258,5 @@ public class Arbol {
         contenido+="}->{"+idHijo+" [label=\""+nombreHijo+"\"]}";
         return contenido;
     }
-    
+
 }

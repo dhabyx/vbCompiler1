@@ -23,8 +23,8 @@ init with {:
     arbolSintactico = new Arbol();
 :};
 
-terminal SUMA, RESTA, PCOMA;
-terminal token DECIMAL;
+terminal SUMA, RESTA, PCOMA, IGUAL;
+terminal token DECIMAL, ID;
 
 non terminal expr_list;
 non terminal Nodo expr, expr_part;
@@ -39,13 +39,18 @@ expr_list ::= expr_list expr_part:e {:
             | expr_part:e {:
                 parser.arbolSintactico.agregarHijo(e);
             :};
-expr_part ::= expr:e {:
+expr_part ::= ID:id IGUAL expr:e {:
                 Nodo expresion = new Nodo(Nodo.TIPO_EXPRESION,0);
+                Nodo identificador = new Nodo(Nodo.TIPO_IDENTIFICADOR, id.getCadena());
+                Nodo igual = new Nodo(Nodo.TIPO_OPERADOR, Nodo.OP_IGUAL);
+                expresion.agregarHijo(identificador);
+                expresion.agregarHijo(igual);
                 expresion.agregarHijo(e);
                 RESULT=expresion;
             :} PCOMA;
             
 expr ::=  DECIMAL:d {: RESULT=new Nodo(d.getEntero()); :}
+        | ID:id {: RESULT=new Nodo(Nodo.TIPO_IDENTIFICADOR, id.getCadena()); :}
         |expr:l SUMA expr:r {: 
             Nodo raiz = new Nodo(Nodo.TIPO_OPERADOR, Nodo.OP_SUMA);
             raiz.agregarHijo(l);

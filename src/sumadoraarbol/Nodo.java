@@ -33,14 +33,19 @@ public class Nodo {
     private int tipo;
     private int operador;
     private int valor;
+    private String identificador;
     private final ArrayList<Nodo> hijos;
 
     public static final int TIPO_EXPRESION=1;
     public static final int TIPO_NUMERO=2;
     public static final int TIPO_OPERADOR=3;
+    public static final int TIPO_IDENTIFICADOR=4;
     
     public static final int OP_SUMA = 10;
     public static final int OP_RESTA = 11;
+    public static final int OP_IGUAL = 12;
+    
+    public static final int NODO_ASIGNACION = 20;
     /**
      *
      * @param tipo de nodo a crear
@@ -57,6 +62,28 @@ public class Nodo {
                 break;
             case Nodo.TIPO_OPERADOR:
                 this.operador = valor;
+                break;
+            case Nodo.TIPO_IDENTIFICADOR:
+                break;
+        }
+    }
+    
+    /**
+     *
+     * @param tipo de nodo a crear
+     * @param valor del nodo a crear
+     */
+    public Nodo(int tipo, String valor) {
+        this.hijos = new ArrayList<>();  
+        this.tipo = tipo;
+        switch (this.tipo) {
+            case Nodo.TIPO_EXPRESION:
+            case Nodo.TIPO_NUMERO:
+            case Nodo.TIPO_OPERADOR:
+                break;
+            case Nodo.TIPO_IDENTIFICADOR:
+                this.identificador = valor;
+                break;
         }
     }
     
@@ -94,10 +121,15 @@ public class Nodo {
     }
 
     public String getOperadorString() {
-        if (operador == OP_SUMA)
-            return "+";
-        else
-            return "-";
+        switch (operador) {
+            case OP_SUMA:
+                return "+";
+            case OP_RESTA:
+                return "-";
+            case OP_IGUAL:
+                return "=";
+        }
+        return "na";
     }
     
     /**
@@ -114,6 +146,13 @@ public class Nodo {
         return valor;
     }
 
+    /**
+     * @return the identificador
+     */
+    public String getIdentificador() {
+        return identificador;
+    }
+    
     /**
      * @param valor the valor to set
      */
