@@ -18,7 +18,7 @@ package tools;
  *
  * @author Dhaby Xiloj <dhabyx@gmail.com>
  */
-import JFlex.SilentExit;
+import jflex.SilentExit;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,7 +41,7 @@ public class GenLexer {
                 +File.separator+
                 "digitos.flex"; //cambiar el nombre de la fuente
         try {
-            JFlex.Main.generate(opciones);
+            jflex.Main.generate(opciones);
         } catch (SilentExit ex) {
             Logger.getLogger(GenLexer.class.getName()).log(Level.SEVERE, null, ex);
         }
